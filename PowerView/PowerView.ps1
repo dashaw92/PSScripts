@@ -11,8 +11,7 @@ PS> .\PowerView.ps1 | Export-Csv -Path .\stats.csv
 #Output selected rows to JSON
 PS> .\PowerView.ps1 | ConvertTo-Json
 #>
-
-[void][Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic')
+param([string]$Name)
 
 Function To-Name($Index) {
     switch($Index) {
@@ -56,11 +55,10 @@ Function To-Stat($Line, $Index) {
 }
 
 $url = "services.runescape.com/m=hiscore_oldschool/index_lite.ws?player="
-$name = [Microsoft.VisualBasic.Interaction]::InputBox("Enter your OSRS display name", "PowerViewer")
 try {
-    $request = Invoke-WebRequest -Uri ("{0}{1}" -f $url, $name)
+    $request = Invoke-WebRequest -Uri ("{0}{1}" -f $url, $Name)
 } catch {
-    Write-Error "`"$name`" is not a valid OSRS display name." -Category InvalidArgument -ErrorId "1"
+    Write-Error "`"$Name`" is not a valid OSRS display name." -Category InvalidArgument -ErrorId "1"
     return
 } 
 
@@ -75,4 +73,4 @@ foreach($i in $raw_data) {
         $index++
     }
 }
-$data | Select Skill,Rank,Level,Experience | Out-GridView -Title ("{0}{1}" -f "PowerView | ", $name) -PassThru
+$data
